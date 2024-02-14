@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { Product } from "./product.model";
-import { DiscoveryModule } from "@nestjs/core";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from 'mongoose';
 
@@ -10,12 +11,32 @@ export class ProductsService {
 
     constructor(@InjectModel('Product') private readonly productModel: Model<Product>) { }
 
-    async insertProduct(title: string, desc: string, price: number) {
-        const prodId = Math.floor((Math.random() * 10 + 1)).toString();
+    async insertProduct(
+        owner: string,
+        title:string,
+        phoneNumber: string,
+        price: string,
+        dateAdded: string,
+        dateModified: string,
+        mainLocation: string,
+        specLocation: string,
+        description: string,
+        photos: string[],
+        mainCategory: string,
+        subCategory: string[],) {
         const newProduct = new this.productModel({
-            title: title,
-            description: desc,
-            price: price,
+            owner:owner,
+            title:title,
+            phoneNumber:phoneNumber,
+            price:price,
+            dateAdded:dateAdded,
+            dateModified:dateModified,
+            mainLocation:mainLocation,
+            specLocation:specLocation,
+            description:description,
+            photos:photos,
+            mainCategory:mainCategory,
+            subCategory:subCategory
         });
         const result = await newProduct.save();
         console.log(result);
@@ -23,27 +44,90 @@ export class ProductsService {
     }
     async getProducts() {
         const products = await this.productModel.find().exec();
-        return products.map((prod) => ({ id: prod.id, title: prod.title, decription: prod.description, price: prod.price }));
+        return products.map((prod) => (
+            {   
+                id: prod.id,
+                owner:prod.owner,
+                title:prod.title,
+                phoneNumber:prod.phoneNumber,
+                price:prod.price,
+                dateAdded:prod.dateAdded,
+                dateModified:prod.dateModified,
+                mainLocation:prod.mainLocation,
+                specLocation:prod.specLocation,
+                description:prod.description,
+                photos:prod.photos,
+                mainCategory:prod.mainCategory,
+                subCategory:prod.subCategory
+            }));
     }
     async getSingleProduct(productId: string) {
-        const product = await this.findProduct(productId);
+        const prod = await this.findProduct(productId);
         return {
-            id: product.id,
-            title: product.title,
-            description: product.description,
-            price: product.price
+            owner:prod.owner,
+                title:prod.title,
+                phoneNumber:prod.phoneNumber,
+                price:prod.price,
+                dateAdded:prod.dateAdded,
+                dateModified:prod.dateModified,
+                mainLocation:prod.mainLocation,
+                specLocation:prod.specLocation,
+                description:prod.description,
+                photos:prod.photos,
+                mainCategory:prod.mainCategory,
+                subCategory:prod.subCategory
         };
     }
-    async updateProduct(productId: string, title: string, desc: string, price: number) {
-        const updatedProduct = await this.findProduct(productId);
+    async updateProduct(
+        id:string,
+        owner: string,
+        title:string,
+        phoneNumber: string,
+        price: string,
+        dateAdded: string,
+        dateModified: string,
+        mainLocation: string,
+        specLocation: string, // specific area
+        description: string,
+        photos: string[],
+        mainCategory: string,
+        subCategory: string[],) {
+        const updatedProduct = await this.findProduct(id);
+        if (owner) {
+            updatedProduct.owner = owner;
+        }
         if (title) {
             updatedProduct.title = title;
         }
-        if (desc) {
-            updatedProduct.description = desc;
+        if (phoneNumber) {
+            updatedProduct.phoneNumber = phoneNumber;
         }
         if (price) {
             updatedProduct.price = price;
+        }
+        if (dateAdded) {
+            updatedProduct.dateAdded = dateAdded;
+        }
+        if (dateModified) {
+            updatedProduct.dateModified = dateModified;
+        }
+        if (mainLocation) {
+            updatedProduct.mainLocation = mainLocation;
+        }
+        if (specLocation) {
+            updatedProduct.specLocation = specLocation;
+        }
+        if (description) {
+            updatedProduct.description = description;
+        }
+        if (mainCategory) {
+            updatedProduct.mainCategory = mainCategory;
+        }
+        if (photos) {
+            updatedProduct.photos = photos;
+        }
+        if (subCategory) {
+            updatedProduct.subCategory = subCategory;
         }
         updatedProduct.save();
     }

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 import { Controller, Post, Body, Get, Param, Patch,Delete } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 
@@ -6,13 +8,32 @@ export class ProductsController {
     constructor(private readonly productsService: ProductsService) { }
     @Post()
     async addProduct(
+        @Body('owner') prodOwner: string,
         @Body('title') prodTitle: string,
-        @Body('description') prodDesc: string,
-        @Body('price') prodPrice: number) {
+        @Body('phoneNumber') prodPhoneNumber: string,
+        @Body('price') prodPrice: string,
+        @Body('dateAdded') prodDateAdded: string,
+        @Body('dateModified') prodDateModified: string,
+        @Body('mainLocation') prodMainLocation: string,
+        @Body('specLocation') prodSpecLocation: string,
+        @Body('description') prodDescription: string,
+        @Body('photos') prodPhotos: string[],
+        @Body('mainCategory') prodMainCategory: string,
+        @Body('subCategory') prodSubCategory: string[]) {
         const generatedId = await this.productsService.insertProduct(
+            prodOwner,
             prodTitle,
-            prodDesc,
-            prodPrice);
+            prodPhoneNumber,
+            prodPrice,
+            prodDateAdded,
+            prodDateModified,
+            prodMainLocation,
+            prodSpecLocation,
+            prodDescription,
+            prodPhotos,
+            prodMainCategory,
+            prodSubCategory,
+            );
         return { id: generatedId };
     }
     @Get()
@@ -28,11 +49,33 @@ export class ProductsController {
     @Patch(':id')
     async updateProduct(
         @Param('id') prodId: string,
+        @Body('owner') prodOwner: string,
         @Body('title') prodTitle: string,
-        @Body('description') prodDesc: string,
-        @Body('price') prodPrice: number) 
+        @Body('phoneNumber') prodPhoneNumber: string,
+        @Body('price') prodPrice: string,
+        @Body('dateAdded') prodDateAdded: string,
+        @Body('dateModified') prodDateModified: string,
+        @Body('mainLocation') prodMainLocation: string,
+        @Body('specLocation') prodSpecLocation: string,
+        @Body('description') prodDescription: string,
+        @Body('photos') prodPhotos: string[],
+        @Body('mainCategory') prodMainCategory: string,
+        @Body('subCategory') prodSubCategory: string[]) 
         {
-            await this.productsService.updateProduct(prodId,prodTitle,prodDesc,prodPrice);
+            await this.productsService.updateProduct( 
+                prodId,
+                prodOwner,
+                prodTitle,
+                prodPhoneNumber,
+                prodPrice,
+                prodDateAdded,
+                prodDateModified,
+                prodMainLocation,
+                prodSpecLocation,
+                prodDescription,
+                prodPhotos,
+                prodMainCategory,
+                prodSubCategory,);
             return null;
         }
     @Delete(':id')
